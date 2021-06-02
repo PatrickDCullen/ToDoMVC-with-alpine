@@ -30,7 +30,13 @@
         />
       </header>
       <section class="main" x-show="todos.length" x-cloak>
-        <input id="toggle-all" class="toggle-all" type="checkbox" />
+        <input
+          x-model="allComplete"
+          @click="toggleAllComplete"
+          id="toggle-all"
+          class="toggle-all"
+          type="checkbox"
+        />
         <label for="toggle-all">Mark all as complete</label>
         <ul class="todo-list">
           <template x-for="todo in filteredTodos" :key="todo.id">
@@ -43,7 +49,7 @@
               <div class="view">
                 <input
                   x-model="todo.completed"
-                  @click="todo.completed = ! todo.completed;"
+                  @click="toggleTodoCompletion(todo)"
                   class="toggle"
                   type="checkbox"
                 />
@@ -60,9 +66,11 @@
           </template>
         </ul>
       </section>
-      <footer class="footer" x-show="true">
+      <footer class="footer" x-show="todos.length">
         <span class="todo-count"
-          ><strong x-text="active.length"></strong> item left</span
+          ><strong x-text="active.length"></strong>
+          <span x-text="active.length === 1 ? 'item' : 'items'"></span>
+          left</span
         >
         <ul class="filters">
           <li>
@@ -93,7 +101,7 @@
         <!-- Hidden if no completed items are left ↓ -->
         <button
           x-show="completed.length"
-          @click="todos = active"
+          @click="clearCompletedTodos"
           class="clear-completed"
         >
           Clear completed
